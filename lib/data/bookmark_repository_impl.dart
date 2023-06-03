@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:get_storage/get_storage.dart';
 import 'package:news_app/data/bookmark_repository.dart';
 import 'package:news_app/data/models/news_entity.dart';
@@ -7,33 +9,25 @@ class BookmarkRepositoryImpl implements BookmarkRepository {
 
   @override
   Future<void> addBookmark(NewsEntity news) async {
-    final List<NewsEntity>? bookmarks = _storage.read('bookmarks');
-
-    final List<NewsEntity> updatedBookmarks = bookmarks ?? [];
-    updatedBookmarks.add(news);
-
-    await _storage.write('bookmarks', updatedBookmarks);
+    final List<NewsEntity> bookmarks = getBookmarkedNews();
+    bookmarks.add(news);
+    await _storage.write('bookmarks', jsonEncode(bookmarks));
   }
 
   @override
   Future<void> removeBookmark(NewsEntity news) async {
-    final List<NewsEntity>? bookmarks = _storage.read('bookmarks');
-
-    if (bookmarks != null) {
-      final updatedBookmarks = bookmarks.where((bookmark) => bookmark.id != news.id).toList();
-      await _storage.write('bookmarks', updatedBookmarks);
-    }
+    final List<NewsEntity> bookmarks = getBookmarkedNews();
+    final updatedBookmarks = bookmarks.where((bookmark) => bookmark.title != news.title).toList();
+    await _storage.write('bookmarks', jsonEncode(updatedBookmarks));
   }
 
   @override
-  Future<List<NewsEntity>> getBookmarkedNews() async {
-    return List.generate(3, (index) {
-      return NewsEntity(
-        id: '$index',
-        title: 'example_title $index',
-        description: 'example_description $index',
-        imageUrl: 'https://placehold.co/300x200/png',
-      );
-    });;
+  List<NewsEntity> getBookmarkedNews() {
+    final String? bookmarksString = _storage.read('bookmarks');
+    if (bookmarksString == null || bookmarksString.isEmpty) {
+      return [];
+    }
+    final List<NewsEntity> bookmarks = jsonDecode(bookmarksString);
+    return bookmarks;
   }
 }

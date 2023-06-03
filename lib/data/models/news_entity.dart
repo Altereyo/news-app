@@ -1,18 +1,71 @@
-import 'package:equatable/equatable.dart';
+class NewsEntity {
+  NewsEntity({
+      this.isBookmarked,
+      this.source,
+      this.author,
+      this.title, 
+      this.description, 
+      this.url, 
+      this.urlToImage, 
+      this.publishedAt, 
+      this.content,});
 
-class NewsEntity extends Equatable{
-  final String id;
-  final String title;
-  final String description;
-  final String imageUrl;
+  NewsEntity.fromJson(dynamic json) {
+    isBookmarked = json['isBookmarked'];
+    source = json['source'] != null ? Source.fromJson(json['source']) : null;
+    author = json['author'];
+    title = json['title'];
+    description = json['description'];
+    url = json['url'];
+    urlToImage = json['urlToImage'];
+    publishedAt = json['publishedAt'];
+    content = json['content'];
+  }
+  bool? isBookmarked;
+  Source? source;
+  String? author;
+  String? title;
+  String? description;
+  String? url;
+  String? urlToImage;
+  String? publishedAt;
+  String? content;
 
-  const NewsEntity({
-    required this.id,
-    required this.title,
-    required this.description,
-    required this.imageUrl,
-  });
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['isBookmarked'] = isBookmarked;
+    if (source != null) {
+      map['source'] = source!.toJson();
+    }
+    map['author'] = author;
+    map['title'] = title;
+    map['description'] = description;
+    map['url'] = url;
+    map['urlToImage'] = urlToImage;
+    map['publishedAt'] = publishedAt;
+    map['content'] = content;
+    return map;
+  }
 
-  @override
-  List<Object?> get props => [id, title, description, imageUrl];
+}
+
+class Source {
+  Source({
+    this.id,
+    this.name,});
+
+  Source.fromJson(dynamic json) {
+    id = json['id'];
+    name = json['name'];
+  }
+  dynamic id;
+  String? name;
+
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['id'] = id;
+    map['name'] = name;
+    return map;
+  }
+
 }

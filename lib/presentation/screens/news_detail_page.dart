@@ -16,8 +16,8 @@ class NewsDetailPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(news.title),
-            Text(news.description),
+            Text(news.title!),
+            Text(news.description ?? ''),
           ],
         ),
       ),

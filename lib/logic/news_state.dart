@@ -21,8 +21,6 @@ class NewsLoaded extends NewsState {
   List<Object?> get props => [news];
 }
 
-class NewsBookmarked extends NewsState {}
-
 class BookmarkedNewsLoaded extends NewsState {
   final List<NewsEntity> news;
 

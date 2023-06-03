@@ -8,14 +8,9 @@ abstract class NewsEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class FetchTopNews extends NewsEvent {
-  final String category;
+class FetchBookmarks extends NewsEvent {}
 
-  FetchTopNews(this.category);
-
-  @override
-  List<Object?> get props => [category];
-}
+class FetchTopNews extends NewsEvent {}
 
 class FetchEverything extends NewsEvent {
   final String category;
@@ -26,6 +21,15 @@ class FetchEverything extends NewsEvent {
   List<Object?> get props => [category];
 }
 
+class NewsLoadedSuccessfully extends NewsEvent {
+  final List<NewsEntity> news;
+
+  NewsLoadedSuccessfully(this.news);
+
+  @override
+  List<Object?> get props => [news];
+}
+
 class AddBookmark extends NewsEvent {
   final NewsEntity news;
 
@@ -34,6 +38,7 @@ class AddBookmark extends NewsEvent {
   @override
   List<Object?> get props => [news];
 }
+
 class RemoveBookmark extends NewsEvent {
   final NewsEntity news;
 

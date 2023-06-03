@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:news_app/presentation/screens/news_page.dart';
+import 'package:news_app/presentation/theme/theme_data.dart';
 
 Future<void> main() async {
   await dotenv.load();
+  await GetStorage.init();
   runApp(const MyApp());
 }
 
@@ -14,10 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'News App',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
+      theme: themeData,
       home: NewsPage(),
     );
   }

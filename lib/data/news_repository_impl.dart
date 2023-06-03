@@ -1,35 +1,29 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:news_app/data/models/get_news_response.dart';
 import 'package:news_app/data/news_repository.dart';
 import 'package:news_app/data/models/news_entity.dart';
 
 class NewsRepositoryImpl implements NewsRepository {
-  final String apiKey = dotenv.env['API_KEY']!;
-
-
-
-  // request: https://newsapi.org/v2/everything?q=flutter&language=en&apiKey=38823f356abb4c6d9fa19f68dd78b40b
-
-
-
-
-  final List<NewsEntity> exapmleResponse = List.generate(3, (index) {
-    return NewsEntity(
-      id: '$index',
-      title: 'example_title $index',
-      description: 'example_description $index',
-      imageUrl: 'https://placehold.co/300x200/png',
-    );
-  });
+  final dio = Dio(BaseOptions(
+    baseUrl: 'https://newsapi.org/v2/',
+    queryParameters: {
+      "q": dotenv.env['NEWS_CATEGORY']!,
+      "apiKey": dotenv.env['API_KEY']!,
+    }
+  ));
 
   @override
-  Future<List<NewsEntity>> getTopNews(String category) async {
-    // логика получения списка новостей по выбранной теме
-    return exapmleResponse;
+  Future<List<NewsEntity>> getTopNews() async {
+    final json = await dio.get('/top-headlines');
+    final response = GetNewsResponse.fromJson(json.data);
+    return response.articles!;
   }
 
   @override
-  Future<List<NewsEntity>> getEverything(String category) async {
-    // логика получения списка всех новостей по теме
-    return exapmleResponse;
+  Future<List<NewsEntity>> getEverything() async {
+    final json = await dio.get('/everything');
+    final response = GetNewsResponse.fromJson(json.data);
+    return response.articles!;
   }
 }
