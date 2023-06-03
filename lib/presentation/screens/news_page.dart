@@ -10,6 +10,8 @@ import 'package:news_app/logic/news_state.dart';
 import 'package:news_app/presentation/screens/news_detail_page.dart';
 
 class NewsPage extends StatefulWidget {
+  const NewsPage({super.key});
+
   @override
   State<NewsPage> createState() => _NewsPageState();
 }
@@ -25,7 +27,7 @@ class _NewsPageState extends State<NewsPage> {
           newsRepository: NewsRepositoryImpl(),
           bookmarkRepository: BookmarkRepositoryImpl(),
         ),
-      )..add(FetchTopHeadlines(dotenv.env['NEWS_CATEGORY']!)),
+      )..add(FetchTopNews(dotenv.env['NEWS_CATEGORY']!)),
       child: BlocBuilder<NewsBloc, NewsState>(
         builder: (context, state) {
           return Scaffold(
@@ -81,7 +83,6 @@ class _NewsPageState extends State<NewsPage> {
         });
         if (tabIdx == 0) {}
         else if (tabIdx == 1) {}
-        else if (tabIdx == 2) {}
         print(tabIdx);
       },
       items: const [

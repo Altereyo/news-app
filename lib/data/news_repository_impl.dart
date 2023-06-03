@@ -22,7 +22,7 @@ class NewsRepositoryImpl implements NewsRepository {
   });
 
   @override
-  Future<List<NewsEntity>> getTopHeadlines(String category) async {
+  Future<List<NewsEntity>> getTopNews(String category) async {
     // логика получения списка новостей по выбранной теме
     return exapmleResponse;
   }

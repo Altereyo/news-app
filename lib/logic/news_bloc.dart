@@ -1,5 +1,4 @@
-import 'package:bloc/bloc.dart';
-import 'package:news_app/data/models/news_entity.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/domain/news_usecase.dart';
 import 'package:news_app/logic/news_event.dart';
 import 'package:news_app/logic/news_state.dart';
@@ -8,13 +7,13 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
   final NewsUseCase _newsUseCase;
 
   NewsBloc(this._newsUseCase) : super(NewsInitial()) {
-    on<FetchTopHeadlines>((event, emit) async {
+    on<FetchTopNews>((event, emit) async {
       emit(NewsLoading());
       try {
-        final topHeadlines = await _newsUseCase.fetchTopHeadlines(event.category);
-        emit(NewsLoaded(topHeadlines));
+        final topNews = await _newsUseCase.fetchTopNews(event.category);
+        emit(NewsLoaded(topNews));
       } catch (e) {
-        emit(NewsError('Failed to fetch top headlines'));
+        emit(NewsError('Failed to fetch top news'));
       }
     });
 

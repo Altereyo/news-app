@@ -8,10 +8,10 @@ abstract class NewsEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class FetchTopHeadlines extends NewsEvent {
+class FetchTopNews extends NewsEvent {
   final String category;
 
-  FetchTopHeadlines(this.category);
+  FetchTopNews(this.category);
 
   @override
   List<Object?> get props => [category];
