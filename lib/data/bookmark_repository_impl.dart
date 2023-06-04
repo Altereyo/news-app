@@ -23,6 +23,7 @@ class BookmarkRepositoryImpl implements BookmarkRepository {
 
   @override
   List<NewsEntity> getBookmarkedNews() {
+    _storage.erase();
     final String? bookmarksString = _storage.read('bookmarks');
     if (bookmarksString == null || bookmarksString.isEmpty) {
       return [];

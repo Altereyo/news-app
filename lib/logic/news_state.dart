@@ -13,13 +13,18 @@ class NewsInitial extends NewsState {}
 class NewsLoading extends NewsState {}
 
 class NewsLoaded extends NewsState {
-  final List<NewsEntity> news;
+  final List<NewsEntity> topHeadlines;
+  final List<NewsEntity> everything;
+  final List<NewsEntity> bookmarks;
 
-  NewsLoaded(this.news);
+  const NewsLoaded({required this.topHeadlines, required this.everything, required this.bookmarks});
+
 
   @override
-  List<Object?> get props => [news];
+  List<Object?> get props => [topHeadlines, everything, bookmarks];
 }
+
+class ShowBookmarks extends NewsState {}
 
 class BookmarkedNewsLoaded extends NewsState {
   final List<NewsEntity> news;

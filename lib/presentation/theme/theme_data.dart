@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:news_app/presentation/theme/app_colors.dart';
 
 final themeData = ThemeData(
-  useMaterial3: true,
+  useMaterial3: false,
   scaffoldBackgroundColor: AppColors.backgroundColor,
   appBarTheme: AppBarTheme(
     backgroundColor: AppColors.darkColor,
@@ -23,6 +23,11 @@ final themeData = ThemeData(
         fontSize: 14,
         fontWeight: FontWeight.w300,
       ),
+    labelSmall: TextStyle(
+        color: AppColors.textColor,
+        fontSize: 18,
+        fontWeight: FontWeight.w400
+    ),
   ),
   bottomNavigationBarTheme: BottomNavigationBarThemeData(
     backgroundColor: AppColors.darkColor,

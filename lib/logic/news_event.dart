@@ -8,32 +8,25 @@ abstract class NewsEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class FetchBookmarks extends NewsEvent {}
+class InitialEvent extends NewsEvent {}
 
-class FetchTopNews extends NewsEvent {}
-
-class FetchEverything extends NewsEvent {
-  final String category;
-
-  FetchEverything(this.category);
-
-  @override
-  List<Object?> get props => [category];
-}
+class FetchNews extends NewsEvent {}
 
 class NewsLoadedSuccessfully extends NewsEvent {
-  final List<NewsEntity> news;
+  final List<NewsEntity> topHeadlines;
+  final List<NewsEntity> everything;
+  final List<NewsEntity> bookmarks;
 
-  NewsLoadedSuccessfully(this.news);
+
+  const NewsLoadedSuccessfully(this.topHeadlines, this.everything, this.bookmarks);
 
   @override
-  List<Object?> get props => [news];
+  List<Object?> get props => [topHeadlines, everything, bookmarks];
 }
 
 class AddBookmark extends NewsEvent {
   final NewsEntity news;
-
-  AddBookmark(this.news);
+  const AddBookmark(this.news);
 
   @override
   List<Object?> get props => [news];
@@ -41,11 +34,14 @@ class AddBookmark extends NewsEvent {
 
 class RemoveBookmark extends NewsEvent {
   final NewsEntity news;
-
-  RemoveBookmark(this.news);
+  const RemoveBookmark(this.news);
 
   @override
   List<Object?> get props => [news];
 }
 
-class GetBookmarks extends NewsEvent {}
+class TopHeadlinesTapped extends NewsEvent {}
+class EverythingTapped extends NewsEvent {}
+
+class NewsTabTapped extends NewsEvent {}
+class BookmarksTabTapped extends NewsEvent {}

@@ -9,51 +9,65 @@ import 'package:news_app/logic/news_state.dart';
 class NewsBloc extends Bloc<NewsEvent, NewsState> {
   final NewsUseCase _newsUseCase;
   Timer? _topNewsFetchTimer;
-  List<NewsEntity> bookmarkedNews = [];
 
   NewsBloc(this._newsUseCase) : super(NewsInitial()) {
-    on<FetchBookmarks>((event, emit) async {
+    on<InitialEvent>((event, emit) async {
       try {
-        bookmarkedNews = await _newsUseCase.getBookmarkedNews();
+        add(FetchNews());
       } catch (e) {
-        emit(NewsError('Failed to fetch bookmarks'));
+        emit(NewsError('Failed to start app'));
+      }
+    });
+
+    on<FetchNews>((event, emit) async {
+      emit(NewsLoading());
+      try {
+        List<NewsEntity> topHeadlines = await _newsUseCase.fetchTopHeadlines();
+        List<NewsEntity> everything = await _newsUseCase.fetchEverything();
+        List<NewsEntity> bookmarkedNews = await _newsUseCase.getBookmarkedNews();
+
+        topHeadlines = _checkBookmarked(topHeadlines, bookmarkedNews);
+        everything = _checkBookmarked(everything, bookmarkedNews);
+
+        print(topHeadlines.length);
+        topHeadlines.forEach((element) => print(element.isBookmarked));
+
+        emit(NewsLoaded(
+          topHeadlines: topHeadlines,
+          everything: everything,
+          bookmarks: bookmarkedNews
+        ));
+
+        if (_topNewsFetchTimer != null && !_topNewsFetchTimer!.isActive) {
+          // top headlines poll
+
+          // _topNewsFetchTimer = Timer.periodic(const Duration(seconds: 2), (timer) async {
+          //   List<NewsEntity> topNews = await _newsUseCase.fetchTopNews();
+          //   List<NewsEntity> bookmarkedNews = await _newsUseCase.getBookmarkedNews();
+          //
+          //   topNews = _checkBookmarked(topHeadlines, bookmarkedNews);
+          //
+          //   add(NewsLoadedSuccessfully(topNews));
+          // });
+        }
+      } catch (e) {
+        if (_topNewsFetchTimer != null) _topNewsFetchTimer!.cancel();
+        emit(NewsError('Failed to fetch news'));
       }
     });
 
     on<NewsLoadedSuccessfully>((event, emit) async {
-      emit(NewsLoaded(event.news));
-    });
-
-    on<FetchTopNews>((event, emit) async {
-      emit(NewsLoading());
-      try {
-        final topNews = await _newsUseCase.fetchTopNews();
-        add(NewsLoadedSuccessfully(topNews));
-        _topNewsFetchTimer = Timer.periodic(const Duration(seconds: 2), (timer) async {
-          final topNews = await _newsUseCase.fetchTopNews();
-          add(NewsLoadedSuccessfully(topNews));
-        });
-      } catch (e) {
-        if (_topNewsFetchTimer != null) _topNewsFetchTimer!.cancel();
-        emit(NewsError('Failed to fetch top news'));
-      }
-    });
-
-    on<FetchEverything>((event, emit) async {
-      emit(NewsLoading());
-      try {
-        final everything = await _newsUseCase.fetchEverything();
-        add(NewsLoadedSuccessfully(everything));
-      } catch (e) {
-        emit(NewsError('Failed to fetch everything'));
-      }
+      emit(NewsLoaded(
+        topHeadlines: event.topHeadlines,
+        everything: event.everything,
+        bookmarks: event.bookmarks
+      ));
     });
 
     on<AddBookmark>((event, emit) async {
       try {
         await _newsUseCase.addBookmark(event.news);
-        // emit(NewsLoaded());
-        add(GetBookmarks());
+        add(FetchNews());
       } catch (e, s) {
         emit(NewsError('Failed to add bookmark'));
       }
@@ -62,21 +76,17 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
     on<RemoveBookmark>((event, emit) async {
       try {
         await _newsUseCase.removeBookmark(event.news);
-        add(GetBookmarks());
+        add(FetchNews());
       } catch (e) {
         emit(NewsError('Failed to remove bookmark'));
       }
     });
+  }
 
-    on<GetBookmarks>((event, emit) async {
-      emit(NewsLoading());
-      try {
-        bookmarkedNews = await _newsUseCase.getBookmarkedNews();
-        emit(BookmarkedNewsLoaded(bookmarkedNews));
-      } catch (e) {
-        emit(NewsError('Failed to get bookmarkes'));
-      }
-    });
+  List<NewsEntity> _checkBookmarked(List<NewsEntity> currentList, List<NewsEntity> bookmarksList) {
+    return currentList.map((el) => el.copyWith(
+      isBookmarked: bookmarksList.contains(el),
+    )).toList();
   }
 }
 

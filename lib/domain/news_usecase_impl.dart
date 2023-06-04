@@ -13,7 +13,7 @@ class NewsUseCaseImpl implements NewsUseCase {
   });
 
   @override
-  Future<List<NewsEntity>> fetchTopNews() async {
+  Future<List<NewsEntity>> fetchTopHeadlines() async {
     return newsRepository.getTopNews();
   }
 
